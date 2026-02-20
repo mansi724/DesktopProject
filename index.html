@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gesture Desktop Control </title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+</head>
+<body>
+  <!-- Top Nav -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"></div>4
+      <div>
+        <div class="brand-title">Gesture Control</div>
+        <div class="brand-sub">Desktop Control Panel</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-btn active" data-page="dashboard">Dashboard</button>
+      <button class="nav-btn" data-page="gestures">Gestures</button>
+      <button class="nav-btn" data-page="retrain">Retrain</button>
+      <button class="nav-btn" data-page="settings">Settings</button>
+    </nav>
+  </header>
+
+  <!-- App Container -->
+  <main class="container">
+
+    <!-- DASHBOARD -->
+    <section class="page show" id="page-dashboard">
+      <div class="page-head">
+        <h1>Dashboard</h1>
+        <p class="muted">Live status + real-time gesture feedback.</p>
+      </div>
+
+      <div class="grid-2">
+        <!-- Left: Camera -->
+        <div class="card">
+          <div class="card-head">
+            <h2>Camera Preview</h2>
+            <span class="badge" id="cameraBadge">Not Connected</span>
+          </div>
+
+          <div class="camera-box" id="cameraBox">
+            <img id="cameraVideo" src="{{ url_for('video_feed') }}">
+            </div>
+          </div>
+
+          <div class="row-between">
+            <div class="muted" id="cameraText">Camera: Not connected</div>
+          </div>
+        </div>
+
+        <!-- Right: Status Cards -->
+        <div class="stack">
+          <div class="card mini">
+            <div class="row-between">
+              <h2>System Status</h2>
+              <span class="status-dot" id="sysDot"></span>
+            </div>
+            <div class="big" id="sysStatus">Stopped</div>
+            <div class="muted">Controls are currently inactive.</div>
+          </div>
+
+          <div class="card mini" id="gestureCard">
+            <h2>Detected Gesture</h2>
+            <div class="big" id="detectedGesture">No gesture</div>
+            <div class="muted">Waiting for input…</div>
+          </div>
+
+          <div class="card mini" id="actionCard">
+            <h2>Mapped Action</h2>
+            <div class="big" id="mappedAction">—</div>
+            <div class="muted">Action triggered by current gesture.</div>
+          </div>
+
+          <div class="card mini">
+            <div class="row-between">
+              <h2>Confidence</h2>
+              <div class="muted" id="confText">0%</div>
+            </div>
+            <div class="progress">
+              <div class="progress-bar" id="confBar" style="width: 0%"></div>
+            </div>
+            <div class="muted">Higher is better (aim 70%+).</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card actions">
+        <div class="row">
+          <button class="btn btn-primary" id="startBtn">Start</button>
+          <button class="btn btn-danger" id="stopBtn">Stop</button>
+          <button class="btn" id="mockGestureBtn">Mock Gesture</button>
+        </div>
+        <div class="muted" id="lastSeen">Last gesture detected: never</div>
+      </div>
+
+      <!-- Toast -->
+      <div class="toast" id="toast"></div>
+    </section>
+
+    <!-- GESTURES -->
+    <section class="page" id="page-gestures">
+      <div class="page-head row-between">
+        <div>
+          <h1>Gestures</h1>
+          <p class="muted">Add, delete, and map gestures to desktop actions.</p>
+        </div>
+        <button class="btn btn-primary" id="addGestureBtn">+ Add Gesture</button>
+      </div>
+
+      <div class="grid-cards" id="gestureGrid">
+        <!-- Cards injected by JS -->
+      </div>
+
+      <!-- Add Gesture Modal -->
+      <div class="modal-backdrop" id="modalBackdrop">
+        <div class="modal">
+          <div class="row-between">
+            <h2>Add New Gesture</h2>
+            <button class="icon-btn" id="closeModalBtn">✕</button>
+          </div>
+
+          <div class="muted">Guided flow (prototype): we’ll capture & name a gesture.</div>
+          <div class="modal-camera">
+  <img src="{{ url_for('video_feed') }}">
+
+  <div class="modal-overlay" id="modalOverlay">Ready</div>
+</div>
+
+          <div class="modal-step card">
+            <div class="muted">Step 1: Give a name</div>
+            <input class="input" id="gestureNameInput" placeholder="e.g., Open Palm" />
+          </div>
+
+          <div class="modal-step card">
+            <div class="muted">Step 2: Choose action</div>
+            <select class="input" id="gestureActionSelect">
+              <option value="Play">Play</option>
+              <option value="Pause">Pause</option>
+              <option value="Tab Right">Tab Right</option>
+              <option value="Volume Up">Volume Up</option>
+              <option value="Volume Down">Volume Down</option>
+              <option value="Tab Left">Tab Left</option>  
+              <option value="Screenshot">Screenshot</option>
+              <option value="Undo">Undo</option>
+              <option value="Redo">Redo</option>
+              <option value="Refresh">Refresh</option>
+              <option value="Scroll up">Scroll up</option>
+              <option value="Scroll down">Scroll down</option>
+              <option value="Refresh">Refresh</option>
+              <option value="Zoom in">Zoom in</option>
+              <option value="Zoom out">Zoom out</option>
+            </select>
+          </div>
+
+          <div class="row-between">
+            <button class="btn btn-ghost" id="mockCaptureBtn">Mock Capture</button>
+            <button class="btn btn-primary" id="saveGestureBtn">Save Gesture</button>
+          </div>
+
+          <div class="muted" id="captureHint">No capture yet.</div>
+        </div>         
+      </div>  
+    </section>
+
+    <!-- RETRAIN -->
+    <section class="page" id="page-retrain">
+      <div class="page-head">
+        <h1>Retrain</h1>
+        <p class="muted">Retrain the model whenever you add/delete gestures.</p>
+      </div>
+
+      <div class="card">
+        <div class="row-between">
+          <div>
+            <h2>Model Training</h2>
+            <div class="muted">One click retraining with clear progress & status.</div>
+          </div>
+          <span class="badge" id="trainStatusBadge">Idle</span>
+        </div>
+
+        <div class="row">
+          <button class="btn btn-primary" id="retrainBtn">Retrain Now</button>
+          <button class="btn btn-ghost" id="resetTrainBtn">Reset</button>
+        </div>
+
+        <div class="train-area" id="trainArea" style="display:none;">
+          <div class="muted" id="trainText">Preparing…</div>
+          <div class="progress">
+            <div class="progress-bar" id="trainBar" style="width: 0%"></div>
+          </div>
+          <div class="muted" id="trainPct">0%</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="page" id="page-settings">
+      <div class="page-head">
+        <h1>Settings</h1>
+        <p class="muted">Accessibility + appearance options.</p>
+      </div>
+
+      <div class="card">
+        <div class="setting">
+          <div>
+            <div class="setting-title">Dark Mode</div>
+            <div class="muted">Reduce glare and improve comfort.</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="darkModeToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting">
+          <div>
+            <div class="setting-title">High Contrast</div>
+            <div class="muted">Improves visibility of important elements.</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="contrastToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting">
+          <div>
+            <div class="setting-title">Large Text</div>
+            <div class="muted">Better readability.</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="largeTextToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting">
+          <div>
+            <div class="setting-title">Reduced Motion</div>
+            <div class="muted">Minimizes animations for comfort.</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="reducedMotionToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting">
+          <div>
+            <div class="setting-title">Dyslexia-Friendly Font (Lexend)</div>
+            <div class="muted">Improves letter clarity and spacing.</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="lexendToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+
+</body>
+</html>

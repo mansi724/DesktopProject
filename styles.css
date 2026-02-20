@@ -1,0 +1,404 @@
+:root{
+  --bg:#0b0f19;
+  --panel:#111827;
+  --card:#0f172a;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --border:rgba(255,255,255,0.08);
+
+  --primary:#2563eb;
+  --danger:#ef4444;
+  --success:#22c55e;
+
+  --radius:16px;
+  --shadow: 0 12px 30px rgba(0,0,0,0.25);
+  --gap:16px;
+
+  --font: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --scale: 1;
+}
+
+/* Light mode */
+body.light{
+  --bg:#f6f7fb;
+  --panel:#ffffff;
+  --card:#ffffff;
+  --text:#0b1020;
+  --muted:#596274;
+  --border:rgba(10,16,32,0.12);
+  --shadow: 0 12px 30px rgba(10,16,32,0.08);
+}
+
+body.high-contrast{
+  --border: rgba(255,255,255,0.25);
+}
+body.light.high-contrast{
+  --border: rgba(10,16,32,0.25);
+}
+
+body.large-text{
+  --scale: 1.12;
+}
+
+*{ box-sizing:border-box; }
+html, body{ height:100%; }
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family: var(--font);
+  transform-origin: top left;
+  font-size: calc(16px * var(--scale));
+}
+
+/* Topbar */
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: color-mix(in oklab, var(--panel) 92%, transparent);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+}
+
+.brand{ display:flex; align-items:center; gap:12px; }
+.logo{
+  width:34px; height:34px;
+  border-radius:12px;
+  background: linear-gradient(135deg, var(--primary), color-mix(in oklab, var(--primary) 30%, white));
+  box-shadow: var(--shadow);
+}
+.brand-title{ font-weight:700; line-height:1.1; }
+.brand-sub{ font-size:0.85em; color:var(--muted); }
+
+.nav{ display:flex; gap:8px; }
+.nav-btn{
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor:pointer;
+}
+.nav-btn.active{
+  background: color-mix(in oklab, var(--primary) 18%, transparent);
+  border-color: color-mix(in oklab, var(--primary) 40%, var(--border));
+}
+
+/* Layout */
+.container{
+  max-width: 1100px;
+  margin: 18px auto;
+  padding: 0 16px 30px;
+}
+
+.page{ display:none; }
+.page.show{ display:block; }
+
+.page-head{ margin: 14px 0 16px; }
+.page-head h1{ margin:0 0 6px; font-size: 1.55em; }
+.muted{ color: var(--muted); }
+
+.grid-2{
+  display:grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: var(--gap);
+}
+@media (max-width: 900px){
+  .grid-2{ grid-template-columns: 1fr; }
+}
+
+.stack{ display:flex; flex-direction:column; gap: var(--gap); }
+
+.card{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+}
+
+.card-head{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.card h2{ margin:0; font-size:1.05em; }
+
+.mini .big{ margin-top: 8px; }
+.big{
+  font-size: 1.35em;
+  font-weight: 700;
+}
+
+.row{ display:flex; gap: 10px; flex-wrap:wrap; }
+.row-between{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+
+/* Camera */
+.camera-box{
+  height: 320px;
+  border-radius: 14px;
+  border: 1px dashed color-mix(in oklab, var(--border) 70%, transparent);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+  background: color-mix(in oklab, var(--panel) 70%, transparent);
+}
+.camera-placeholder{ text-align:center; }
+.camera-icon{
+  width:54px; height:54px;
+  border-radius: 18px;
+  margin: 0 auto 10px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--primary) 18%, transparent);
+}
+
+#cameraVideo{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display:none; /* shown after camera connects */
+  border-radius: 14px;
+}
+
+/* Buttons */
+.btn{
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel) 65%, transparent);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 14px;
+  cursor:pointer;
+}
+.btn:hover{ filter: brightness(1.05); }
+
+.btn-primary{
+  background: color-mix(in oklab, var(--primary) 75%, black);
+  border-color: color-mix(in oklab, var(--primary) 75%, white);
+}
+.btn-danger{
+  background: color-mix(in oklab, var(--danger) 70%, black);
+  border-color: color-mix(in oklab, var(--danger) 70%, white);
+}
+.btn-ghost{
+  background: transparent;
+}
+
+.actions{ margin-top: var(--gap); }
+
+/* Status */
+.status-dot{
+  width: 10px; height: 10px;
+  border-radius: 999px;
+  background: var(--danger);
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--danger) 18%, transparent);
+}
+
+.badge{
+  font-size: 0.85em;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel) 70%, transparent);
+}
+
+/* Progress */
+.progress{
+  width:100%;
+  height: 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  overflow:hidden;
+  margin-top: 8px;
+  background: color-mix(in oklab, var(--panel) 65%, transparent);
+}
+.progress-bar{
+  height:100%;
+  width:0%;
+  background: var(--success);
+}
+
+/* Gesture Cards */
+.grid-cards{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+}
+@media(max-width: 900px){
+  .grid-cards{ grid-template-columns: repeat(2, 1fr); }
+}
+@media(max-width: 560px){
+  .grid-cards{ grid-template-columns: 1fr; }
+}
+
+.gesture-preview {
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;   
+  background: rgba(255,255,255,0.03);
+  border-radius: 16px;
+  margin-bottom: 15px;
+}
+
+.gesture-preview {
+  transition: transform 0.2s ease;
+}
+
+.card:hover .gesture-preview {
+  transform: scale(1.08);
+}
+
+
+.select{
+  width:100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+}
+.gesture-actions{ margin-top: 10px; display:flex; gap:10px; justify-content: space-between; }
+
+/* Modal */
+.modal-backdrop{
+  position: fixed;
+  inset: 0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background: rgba(0,0,0,0.55);
+  padding: 18px;
+}
+.modal-backdrop.show{ display:flex; }
+
+.modal{
+  width: min(520px, 100%);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
+.modal-step{ margin: 12px 0; }
+
+.icon-btn{
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  width: 38px; height: 38px;
+  border-radius: 12px;
+  cursor:pointer;
+}
+
+.input{
+  width:100%;
+  padding: 12px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  margin-top: 8px;
+}
+
+/* Settings */
+.setting{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.setting:last-child{ border-bottom:none; }
+.setting-title{ font-weight:700; }
+
+/* Switch */
+.switch{
+  position: relative;
+  width: 52px;
+  height: 30px;
+}
+.switch input{ display:none; }
+.slider{
+  position:absolute; inset:0;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--panel) 70%, transparent);
+  border: 1px solid var(--border);
+  cursor:pointer;
+}
+.slider:before{
+  content:"";
+  position:absolute;
+  width: 24px; height: 24px;
+  top: 2px; left: 2px;
+  border-radius: 999px;
+  background: var(--text);
+  transition: transform 0.18s ease;
+}
+.switch input:checked + .slider:before{
+  transform: translateX(22px);
+}
+
+/* Toast */
+.toast{
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel) 82%, transparent);
+  box-shadow: var(--shadow);
+  display:none;
+  max-width: min(520px, 92vw);
+}
+.toast.show{ display:block; }
+
+/* Reduced motion */
+body.reduced-motion *{
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+/* Add gesture connecting camera */
+.modal-camera{
+  position: relative;
+  margin: 12px 0;
+  height: 220px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+#modalVideo{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-overlay{
+  position: absolute;
+  inset: 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size: 28px;
+  font-weight: 700;
+  background: rgba(0,0,0,0.35);
+  color: white;
+}
+
+#cameraVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
