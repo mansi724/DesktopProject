@@ -176,8 +176,7 @@ Then open **http://127.0.0.1:5000** in your browser.
 
 <!-- TODO: add names and GitHub profile links -->
 
-- **Your Name**: [@your-username](https://github.com/your-username)
-
+- **Navya Minocha**, **Mansi Bansal**
 ---
 
 ## 📄 License
